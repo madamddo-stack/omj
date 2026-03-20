@@ -1,193 +1,286 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>오먹지</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>오먹지 MVP</title>
+  <style>
+    :root{
+      --bg:#FFF8F2;
+      --card:#F4F1EC;
+      --text:#2F2F2F;
+      --sub:#6B6B6B;
+      --primary:#E4572E;
+      --safe:#4CAF50;
+      --mid:#F4B400;
+      --busy:#D84343;
+      --radius:16px;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "Noto Sans KR", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+    body{ margin:0; background:var(--bg); color:var(--text); }
+    .wrap{ max-width:920px; margin:0 auto; padding:20px; }
+    h1{ font-size:22px; margin:0 0 6px; }
+    .sub{ color:var(--sub); font-size:13px; margin-bottom:14px; }
+    .panel{
+      background:var(--card); border-radius:var(--radius); padding:14px;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+      display:grid; gap:10px; margin-bottom:14px;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    label{ font-size:12px; color:var(--sub); display:block; margin-bottom:6px; }
+    input, select{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.08);
+      background:white;
+      font-size:14px;
+      min-width:110px;
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+    .btn{
+      background:var(--primary); color:#fff; border:0; border-radius:999px;
+      padding:10px 14px; font-weight:600; cursor:pointer;
+    }
+    .btn.secondary{
+      background:transparent; color:var(--primary);
+      border:1px solid var(--primary);
+    }
+    .hint{
+      background:#fff; border-radius:var(--radius); padding:12px 14px;
+      border:1px dashed rgba(0,0,0,.12);
+    }
+    .grid{
+      display:grid; grid-template-columns:1fr; gap:12px;
+    }
+    .card{
+      background:#fff; border-radius:var(--radius); padding:14px;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .topline{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .name{ font-size:18px; font-weight:600; }
+    .meta{ color:var(--sub); font-size:13px; margin-top:6px; }
+    .menu{ margin-top:10px; font-size:14px; }
+    .point{ margin-top:6px; color:var(--sub); font-size:14px; }
+    .actions{ margin-top:12px; display:flex; gap:10px; }
+    .small{ font-size:12px; color:var(--sub); }
 
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-  margin:0;
-  padding:20px;
-  background:#f5f5f5;
-}
-
-h1 {
-  font-size:22px;
-  margin-bottom:16px;
-}
-
-.row{
-  display:flex;
-}
-
-.filter-bar{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  margin-bottom:16px;
-}
-
-select{
-  padding:10px 12px;
-  border-radius:999px;
-  border:1px solid rgba(0,0,0,.1);
-  background:white;
-  font-size:14px;
-  min-width:110px;
-  flex:0 0 auto;
-}
-
-.card{
-  background:white;
-  padding:16px;
-  border-radius:12px;
-  margin-bottom:12px;
-}
-
-.title{
-  font-weight:bold;
-  margin-bottom:6px;
-}
-
-.meta{
-  font-size:12px;
-  color:#666;
-  margin-bottom:6px;
-}
-
-.menu{
-  font-size:13px;
-  margin-bottom:10px;
-}
-
-.btn{
-  display:inline-block;
-  padding:6px 10px;
-  background:black;
-  color:white;
-  border-radius:6px;
-  font-size:12px;
-  text-decoration:none;
-}
-</style>
-
+    /* 추가: 필터 한 줄 스크롤 */
+    .filter-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:2px;
+    }
+    .filter-row::-webkit-scrollbar{
+      display:none;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="wrap">
+    <h1>오늘 뭐 먹지?</h1>
+    <div class="sub">교대역 7번 출구 · 점심(11:30~12:30) · 오먹지 MVP</div>
 
-<h1>🍚 오먹지</h1>
-
-<!-- 필터 -->
-<div class="filter-bar">
-
-  <select id="cat">
-    <option value="">전체</option>
-    <option value="국물">국물</option>
-    <option value="면">면</option>
-    <option value="밥">밥</option>
-    <option value="고기">고기</option>
-    <option value="가볍게">가볍게</option>
-  </select>
-
-  <select id="budget">
-    <option value="">예산</option>
-    <option value="10000">1만원↓</option>
-    <option value="13000">1.3만원↓</option>
-    <option value="15000">1.5만원↓</option>
-  </select>
-
-  <select id="dist">
-    <option value="7">7분컷</option>
-    <option value="">전체</option>
-  </select>
-
-  <select id="solo">
-    <option value="">혼밥</option>
-    <option value="매우좋음">매우좋음</option>
-    <option value="가능">가능</option>
-  </select>
-
-</div>
-
-<!-- 결과 -->
-<div id="list"></div>
-
-<script>
-
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQerqNYDqu3deQYHvRYPlWEyVVibWgA_wKmlRL9gIYgHKL1C4Ok63ElWjQ7QkqL4OObK6iIGxdyWT1K/pub?gid=2085358171&single=true&output=csv";
-
-const elCat = document.getElementById("cat");
-const elBudget = document.getElementById("budget");
-const elDist = document.getElementById("dist");
-const elSolo = document.getElementById("solo");
-
-let DB = [];
-
-async function loadData(){
-  const res = await fetch(CSV_URL);
-  const text = await res.text();
-  const rows = text.split("\n");
-  const headers = rows[0].split(",");
-
-  DB = rows.slice(1).map(row => {
-    const cols = row.split(",");
-    let obj = {};
-    headers.forEach((h,i)=> obj[h.trim()] = cols[i]);
-    return obj;
-  });
-
-  pick();
-}
-
-function filterDB(){
-  return DB.filter(item => {
-
-    if(elCat.value && item["카테고리"] !== elCat.value) return false;
-
-    if(elSolo.value && item["혼밥"] !== elSolo.value) return false;
-
-    if(elBudget.value && Number(item["가격"]) > Number(elBudget.value)) return false;
-
-    if(elDist.value && Number(item["도보거리"]) > Number(elDist.value)) return false;
-
-    return true;
-  });
-}
-
-function render(list){
-  const container = document.getElementById("list");
-
-  if(list.length === 0){
-    container.innerHTML = "조건에 맞는 식당이 없어요 😢";
-    return;
-  }
-
-  container.innerHTML = list.map(item => `
-    <div class="card">
-      <div class="title">${item["상호명"]}</div>
-      <div class="meta">
-        ${item["가격"]}원 · 도보 ${item["도보거리"]}분
+    <div class="panel">
+      <div class="hint" id="statusHint">
+        ⏰ 지금 점심시간이에요. 오늘은 가볍게 먹어도 좋겠네요.
+        <div class="small">* 날씨는 “텍스트 힌트”만 제공 (자동 필터 없음)</div>
       </div>
-      <div class="menu">${item["추천메뉴"]}</div>
-      <a href="${item["네이버지도URL"]}" target="_blank" class="btn">네이버 지도</a>
+
+      <!-- 필터 순서 변경: 카테고리 → 예산 → 거리 → 혼밥 -->
+      <div class="filter-row">
+        <select id="cat">
+          <option value="">전체</option>
+          <option value="국물">🍲 국물</option>
+          <option value="면">🍜 면</option>
+          <option value="밥">🍚 밥</option>
+          <option value="고기">🥩 고기</option>
+          <option value="가볍게">🥗 가볍게</option>
+        </select>
+
+        <select id="budget">
+          <option value="">예산</option>
+          <option value="10000">1만원↓</option>
+          <option value="13000">1.3만원↓</option>
+          <option value="15000">1.5만원↓</option>
+        </select>
+
+        <select id="dist">
+          <option value="7">🚶 7분컷</option>
+          <option value="">전체</option>
+        </select>
+
+        <select id="solo">
+          <option value="">혼밥</option>
+          <option value="매우좋음">매우좋음</option>
+          <option value="가능">가능</option>
+        </select>
+      </div>
     </div>
-  `).join("");
-}
 
-function pick(){
-  const filtered = filterDB();
-  render(filtered);
-}
+    <div class="grid" id="results"></div>
+  </div>
 
-elCat.addEventListener("change", pick);
-elBudget.addEventListener("change", pick);
-elDist.addEventListener("change", pick);
-elSolo.addEventListener("change", pick);
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQerqNYDqu3deQYHvRYPlWEyVVibWgA_wKmlRL9gIYgHKL1C4Ok63ElWjQ7QkqL4OObK6iIGxdyWT1K/pub?gid=2085358171&single=true&output=csv";
 
-loadData();
+    const elResults = document.getElementById("results");
+    const elCat = document.getElementById("cat");
+    const elSolo = document.getElementById("solo");
+    const elBudget = document.getElementById("budget");
+    const elDist = document.getElementById("dist");
 
-</script>
+    let db = [];
+    let lastCriteria = null;
 
+    function parseCSV(text){
+      const lines = text.trim().split(/\r?\n/);
+      const header = lines[0].split(",").map(s => s.trim());
+      return lines.slice(1).map(line => {
+        const cols = line.split(",").map(s => s.trim());
+        const obj = {};
+        header.forEach((h, i) => obj[h] = cols[i] ?? "");
+        obj["도보거리"] = Number(obj["도보거리"] || 999);
+        obj["가격대"] = Number(obj["가격대"] || 999999);
+        obj["7분컷"] = (String(obj["7분컷"]).toUpperCase() === "TRUE");
+        return obj;
+      });
+    }
+
+    function safetyScore(s){
+      if(s === "안전") return 3;
+      if(s === "보통") return 2;
+      if(s === "붐빔") return 0;
+      return 1;
+    }
+
+    function soloScore(s){
+      if(s === "매우좋음") return 2;
+      if(s === "가능") return 1;
+      if(s === "애매") return 0;
+      if(s === "비추천") return -2;
+      return 0;
+    }
+
+    function dotColor(s){
+      if(s === "안전") return "var(--safe)";
+      if(s === "보통") return "var(--mid)";
+      if(s === "붐빔") return "var(--busy)";
+      return "var(--mid)";
+    }
+
+    function score(item, criteria){
+      let sc = 0;
+      if(item["7분컷"]) sc += 3;
+      sc += safetyScore(item["안전도"]) * 2;
+      sc += soloScore(item["혼밥"]);
+      sc += Math.max(0, 8 - item["도보거리"]);
+      if(criteria.cat && item["카테고리"] === criteria.cat) sc += 3;
+      if(criteria.budget && item["가격대"] <= criteria.budget) sc += 1;
+      return sc;
+    }
+
+    function filterDB(criteria){
+      let items = [...db];
+
+      if(criteria.dist === 7){
+        items = items.filter(x => x["7분컷"] === true);
+      }
+
+      if(criteria.cat){
+        items = items.filter(x => x["카테고리"] === criteria.cat);
+      }
+
+      if(criteria.solo){
+        items = items.filter(
+          x => x["혼밥"] === criteria.solo || (criteria.solo === "가능" && x["혼밥"] === "매우좋음")
+        );
+      }
+
+      if(criteria.budget){
+        items = items.filter(x => x["가격대"] <= criteria.budget);
+      }
+
+      return items;
+    }
+
+    function render(list){
+      if(list.length === 0){
+        elResults.innerHTML = `<div class="card">조건에 맞는 집이 없어요. 필터를 조금 풀어볼까요?</div>`;
+        return;
+      }
+
+      elResults.innerHTML = list.map(item => `
+        <div class="card">
+          <div class="topline">
+            <div class="name">${item["상호명"]}</div>
+            <span class="pill" style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--card);font-size:12px;color:var(--text);">
+              <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:${dotColor(item["안전도"])}"></span>
+              ${item["안전도"]}
+            </span>
+          </div>
+
+          <div class="meta">🚶 ${item["도보거리"]}분 | 💸 ${Math.round(item["가격대"]/1000)}천원대 | 🧍 ${item["혼밥"]}</div>
+
+          <div class="menu">⭐ ${item["추천메뉴"]}</div>
+          <div class="point">🔥 ${item["결정포인트"]}</div>
+
+          <div class="actions">
+            <a class="btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;"
+               target="_blank"
+               href="${item['네이버지도URL'] ? item['네이버지도URL'] : 'https://map.naver.com/v5/search/' + encodeURIComponent('교대역 ' + item['상호명'])}">
+               길찾기
+            </a>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function pick(){
+      const criteria = {
+        cat: elCat.value,
+        solo: elSolo.value,
+        budget: elBudget.value ? Number(elBudget.value) : null,
+        dist: elDist.value ? Number(elDist.value) : null
+      };
+
+      lastCriteria = criteria;
+
+      const candidates = filterDB(criteria);
+      const ranked = candidates
+        .map(x => ({...x, __score: score(x, criteria)}))
+        .sort((a,b) => b.__score - a.__score);
+
+      render(ranked);
+    }
+
+    async function init(){
+      if(CSV_URL.includes("PASTE_YOUR")){
+        elResults.innerHTML = `<div class="card">1) Google Sheets를 '웹에 게시 → CSV' 한 링크를 <b>CSV_URL</b>에 붙여넣으면 바로 동작해요.</div>`;
+        return;
+      }
+
+      const res = await fetch(CSV_URL);
+      const text = await res.text();
+      db = parseCSV(text);
+      pick();
+    }
+
+    // 버튼 없이 필터 변경 즉시 반영
+    elCat.addEventListener("change", pick);
+    elBudget.addEventListener("change", pick);
+    elDist.addEventListener("change", pick);
+    elSolo.addEventListener("change", pick);
+
+    init();
+  </script>
 </body>
 </html>
