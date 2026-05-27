@@ -230,9 +230,21 @@ document.getElementById('weatherRecommendBtn').addEventListener('click', () => {
   let candidates = pool;
   let label = '날씨 기반 추천';
 
-  if (state.weather === 'rain' || state.weather === 'cold') {
+  if (state.weather === 'rain') {
     candidates = pool.filter(r => r.cat === '국물');
-    label = state.weather === 'rain' ? '비 오는 날엔 국물!' : '추운 날엔 따뜻하게!';
+    label = '비 오는 날엔 국물!';
+  } else if (state.weather === 'freeze') {
+    candidates = pool.filter(r => r.cat === '국물');
+    label = '영하의 날엔 국물이 답!';
+  } else if (state.weather === 'cold') {
+    candidates = pool.filter(r => r.cat === '국물');
+    label = '추운 날엔 뜨끈하게!';
+  } else if (state.weather === 'chilly') {
+    candidates = pool.filter(r => r.cat === '국물' || r.cat === '고기');
+    label = '쌀쌀한 날엔 든든하게!';
+  } else if (state.weather === 'warm') {
+    candidates = pool.filter(r => r.cat === '가볍게' || r.cat === '면');
+    label = '따뜻한 날엔 산뜻하게!';
   } else if (state.weather === 'hot') {
     candidates = pool.filter(r => r.cat === '가볍게' || (r.cat === '면' && r.safe !== '붐빔'));
     label = '더운 날엔 가볍게!';
@@ -253,21 +265,30 @@ async function loadWeather() {
     const precip = data.current.precipitation;
     const code = data.current.weathercode;
 
-    let icon = '☀️', label = `맑음 · ${temp}°C`, sub = '가볍게 나가기 좋아요';
-    state.weather = 'sunny';
+    let icon, label, sub;
 
+    // 비/눈 우선 처리
     if (precip > 0 || (code >= 51 && code <= 99)) {
       icon = '🌧'; label = `비 · ${temp}°C`; sub = '따뜻한 국물 어때요?';
       state.weather = 'rain';
-    } else if (temp <= 5) {
+    } else if (temp <= 0) {
+      icon = '❄️'; label = `영하 · ${temp}°C`; sub = '뜨끈한 국물이 간절한 날';
+      state.weather = 'freeze';
+    } else if (temp <= 7) {
       icon = '🥶'; label = `추움 · ${temp}°C`; sub = '뜨끈한 국물 강추!';
       state.weather = 'cold';
-    } else if (temp >= 28) {
-      icon = '🌡'; label = `더움 · ${temp}°C`; sub = '시원하고 가벼운 메뉴 추천';
+    } else if (temp <= 14) {
+      icon = '🧥'; label = `쌀쌀 · ${temp}°C`; sub = '든든하게 먹어요';
+      state.weather = 'chilly';
+    } else if (temp <= 22) {
+      icon = '😊'; label = `적당 · ${temp}°C`; sub = '뭐든 다 맛있는 날';
+      state.weather = 'mild';
+    } else if (temp <= 27) {
+      icon = '🌤'; label = `따뜻 · ${temp}°C`; sub = '산뜻한 메뉴 어때요?';
+      state.weather = 'warm';
+    } else {
+      icon = '🌡'; label = `더움 · ${temp}°C`; sub = '시원하고 가볍게!';
       state.weather = 'hot';
-    } else if (code >= 1 && code <= 3) {
-      icon = '☁️'; label = `흐림 · ${temp}°C`; sub = '오늘 점심 뭐 먹지?';
-      state.weather = 'cloudy';
     }
 
     document.getElementById('weatherIcon').textContent = icon;
