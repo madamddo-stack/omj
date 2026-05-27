@@ -291,9 +291,17 @@ async function loadWeather() {
       state.weather = 'hot';
     }
 
+    // 우산 / 썬글라스 팁
+    const tip = state.weather === 'rain'
+      ? '☂️'
+      : state.weather === 'hot'
+      ? '🕶️'
+      : '';
+
     document.getElementById('weatherIcon').textContent = icon;
     document.getElementById('weatherLabel').textContent = label;
     document.getElementById('weatherSub').textContent = sub;
+    document.getElementById('weatherTip').textContent = tip;
   } catch {
     document.getElementById('weatherLabel').textContent = '날씨 정보 없음';
     document.getElementById('weatherSub').textContent = '랜덤 추천을 이용해보세요';
