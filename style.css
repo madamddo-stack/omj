@@ -152,11 +152,11 @@ body {
 
 .result-label {
   text-align: center;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1.5;
-  color: #9A8870;
-  letter-spacing: 0.5px;
+  color: #4b2d00;
+  letter-spacing: 0;
   margin-bottom: 14px;
 }
 
