@@ -15,6 +15,7 @@ let state = {
   filters: { min7: false, honja: false, safe: false, cheap: false },
   weather: null,
   filtered: [],
+  picked: null,
 };
 let spinInterval = null;
 
@@ -198,6 +199,7 @@ function runSlot(final, label = '오늘의 추천') {
         pool[(fi + 1) % pool.length],
         true
       );
+      state.picked = final;
       setTimeout(() => showResultInfo(final), 150);
     }
   }, 80);
@@ -221,6 +223,10 @@ document.getElementById('rerollBtn').addEventListener('click', () => {
 });
 
 document.getElementById('confirmBtn').addEventListener('click', () => {
+  if (state.picked) {
+    const link = state.picked.naver || naverLink(state.picked.name);
+    window.open(link, '_blank', 'noopener');
+  }
   document.getElementById('resultCard').classList.add('hidden');
 });
 
