@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오먹지 🍽 — 교대 점심 맛집</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <header class="header">
+      <div class="header-inner">
+        <div>
+          <h1 class="logo">오먹지 <span class="logo-sub">🍽</span></h1>
+          <p class="header-desc">교대 근처 점심 맛집 · 동익성봉빌딩 기준 도보거리</p>
+        </div>
+        <div id="weatherBox" class="weather-box">
+          <span id="weatherIcon" class="weather-icon">—</span>
+          <div class="weather-info">
+            <span id="weatherLabel" class="weather-label">날씨 불러오는 중</span>
+            <span id="weatherSub" class="weather-sub"></span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+
+      <!-- 추천 결과 카드 (필름 슬롯) -->
+      <div id="resultCard" class="result-card hidden">
+        <p class="result-label" id="resultLabel">오늘의 추천</p>
+
+        <div class="slot-machine">
+          <div class="slot-col" id="slotName"></div>
+          <div class="slot-col" id="slotMenu"></div>
+          <div class="slot-col" id="slotCat"></div>
+        </div>
+
+        <div class="result-info hidden" id="resultInfo">
+          <div class="result-thumb" id="resultThumb"></div>
+          <div class="result-detail">
+            <div class="result-name-row">
+              <strong class="result-name" id="resultName"></strong>
+              <span class="result-cat-badge" id="resultCatBadge"></span>
+            </div>
+            <p class="result-meta" id="resultMeta"></p>
+            <p class="result-point" id="resultPoint"></p>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-reroll" id="rerollBtn">↺ 다시 뽑기</button>
+          <button class="btn-decide" id="confirmBtn">이걸로 결정! →</button>
+        </div>
+      </div>
+
+      <!-- 컨트롤 -->
+      <div class="controls">
+        <div class="cat-filters" id="catFilters">
+          <button class="cat-btn active" data-cat="전체">전체</button>
+          <button class="cat-btn" data-cat="밥">🍚 밥</button>
+          <button class="cat-btn" data-cat="국물">🍲 국물</button>
+          <button class="cat-btn" data-cat="면">🍜 면</button>
+          <button class="cat-btn" data-cat="고기">🥩 고기</button>
+          <button class="cat-btn" data-cat="가볍게">🥗 가볍게</button>
+        </div>
+        <div class="action-btns">
+          <button class="btn-weather" id="weatherRecommendBtn">날씨 추천 ✦</button>
+          <button class="btn-random" id="randomBtn">🎲 랜덤 뽑기</button>
+        </div>
+      </div>
+
+      <div class="sub-filters" id="subFilters">
+        <button class="sub-btn" data-filter="min7">⚡ 7분컷</button>
+        <button class="sub-btn" data-filter="honja">👤 혼밥 가능</button>
+        <button class="sub-btn" data-filter="safe">😌 안 붐빔</button>
+        <button class="sub-btn" data-filter="cheap">💸 1만원 이하</button>
+      </div>
+
+      <div class="list-meta">
+        <span id="countText" class="count-text"></span>
+      </div>
+
+      <!-- 카드 그리드 -->
+      <div class="grid" id="grid"></div>
+
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
