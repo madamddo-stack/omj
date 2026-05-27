@@ -321,6 +321,60 @@ body {
 .btn-decide:hover  { background: #A87A20; }
 .btn-decide:active { opacity: 0.85; }
 
+/* ── Weather hero card ──────────────────────────────── */
+.weather-hero {
+  position: relative;
+  border-radius: var(--radius-md);
+  padding: 24px 20px 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.weather-hero.hidden { display: none; }
+
+.weather-hero-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.45);
+  margin-bottom: 10px;
+}
+.weather-hero-msg {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #3a2000;
+  margin-bottom: 18px;
+  white-space: pre-line;
+}
+.btn-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-hero-cta:hover  { opacity: 0.8; }
+.btn-hero-cta:active { opacity: 0.65; }
+
+.weather-hero-deco {
+  position: absolute;
+  right: 20px;
+  top: 16px;
+  font-size: 80px;
+  line-height: 1;
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* ── Controls ───────────────────────────────────────── */
 .controls {
   display: flex;
@@ -356,22 +410,6 @@ body {
 
 .action-btns { display: flex; gap: 8px; }
 
-.btn-weather {
-  padding: 9px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 400;
-  font-family: inherit;
-  line-height: 1.5;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s, opacity 0.2s;
-}
-.btn-weather:hover  { background: var(--surface-sub); }
-.btn-weather:active { opacity: 0.85; }
 
 .btn-random {
   padding: 9px 16px;

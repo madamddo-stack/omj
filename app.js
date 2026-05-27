@@ -310,6 +310,26 @@ async function loadWeather() {
     document.getElementById('weatherIcon').textContent = icon;
     document.getElementById('weatherLabel').textContent = label;
     document.getElementById('weatherSub').textContent = sub;
+
+    // 히어로 카드 설정
+    const HERO = {
+      rain:   { bg: '#D6E8F5', deco: '🌧', heroLabel: '🌧 Rainy',       msg: '비 오는 날엔\n따뜻한 국물 한 그릇\n어떠세요?' },
+      freeze: { bg: '#D8ECF9', deco: '❄️', heroLabel: '❄️ Freezing',    msg: '꽁꽁 언 오늘\n뜨끈한 국물이\n간절한 날이에요' },
+      cold:   { bg: '#D8ECF9', deco: '🥶', heroLabel: '🥶 Cold',         msg: '추운 날엔\n뜨끈한 국물로\n속을 채워요' },
+      chilly: { bg: '#EDE0D4', deco: '🧥', heroLabel: '🧥 Chilly',       msg: '쌀쌀한 오늘\n든든한 한 끼로\n따뜻하게 시작해요' },
+      mild:   { bg: '#E6EFDF', deco: '😊', heroLabel: '😊 Perfect',      msg: '딱 좋은 날씨\n오늘은 뭐든\n다 맛있어요' },
+      warm:   { bg: '#FFF3CD', deco: '🌤', heroLabel: '🌤 Warm',         msg: '따뜻한 오늘\n산뜻한 메뉴로\n가볍게 가볼까요?' },
+      hot:    { bg: '#F6C36B', deco: '☁️', heroLabel: '🌡 Sunny & Hot',  msg: '무더운 오늘\n시원한 면 메뉴로\n가볍게 가볼까요?' },
+    };
+    const h = HERO[state.weather];
+    if (h) {
+      const hero = document.getElementById('weatherHero');
+      hero.style.background = h.bg;
+      document.getElementById('heroLabel').textContent = h.heroLabel;
+      document.getElementById('heroMsg').textContent = h.msg;
+      document.getElementById('heroDeco').textContent = h.deco;
+      hero.classList.remove('hidden');
+    }
   } catch {
     document.getElementById('weatherLabel').textContent = '날씨 정보 없음';
     document.getElementById('weatherSub').textContent = '랜덤 추천을 이용해보세요';
