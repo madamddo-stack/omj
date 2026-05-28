@@ -1,5 +1,10 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Material Icons 크기 헬퍼 ──────────────────────────── */
+.material-icons { vertical-align: middle; line-height: 1; }
+.mi-xs { font-size: 13px !important; }
+.mi-sm { font-size: 16px !important; }
+
 :root {
   /* Base */
   --bg:              #F9F9F9;
@@ -310,6 +315,10 @@ body {
 /* ── Result card buttons ─────────────────────────────── */
 .btn-reroll {
   flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 13px;
   border-radius: var(--radius-md);
   border: 1px solid #E0D8CC;
@@ -327,6 +336,10 @@ body {
 
 .btn-decide {
   flex: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 13px;
   border-radius: var(--radius-md);
   border: none;
@@ -433,6 +446,9 @@ body {
 
 
 .btn-random {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 9px 16px;
   border-radius: var(--radius-md);
   border: none;
@@ -458,6 +474,9 @@ body {
 }
 
 .sub-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 5px 13px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);

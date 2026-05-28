@@ -76,15 +76,15 @@ function renderCard(r) {
             <span class="card-name">${r.name}</span>
             <span class="card-cat-label">· ${r.cat}</span>
           </div>
-          <a class="card-arrow" href="${link}" target="_blank" rel="noopener" aria-label="${r.name} 네이버 지도">↗</a>
+          <a class="card-arrow" href="${link}" target="_blank" rel="noopener" aria-label="${r.name} 네이버 지도"><span class="material-icons mi-sm">open_in_new</span></a>
         </div>
         <p class="card-meta">${r.menu || '-'} · 도보 ${r.walk ?? '?'}분 · ${formatPrice(r.price)}</p>
         ${r.point ? `<p class="card-point">"${r.point}"</p>` : ''}
         <div class="badges">
-          ${r.min7 ? '<span class="badge badge-7min">⚡ 7분컷</span>' : ''}
-          ${honjaOK ? '<span class="badge badge-honja">👤 혼밥</span>' : ''}
-          ${r.safe !== '붐빔' ? '<span class="badge badge-safe">😌 안붐빔</span>' : ''}
-          ${r.price && r.price <= 10000 ? '<span class="badge badge-cheap">💸 1만원↓</span>' : ''}
+          ${r.min7 ? '<span class="badge badge-7min"><span class="material-icons mi-xs">bolt</span> 7분컷</span>' : ''}
+          ${honjaOK ? '<span class="badge badge-honja"><span class="material-icons mi-xs">person</span> 혼밥</span>' : ''}
+          ${r.safe !== '붐빔' ? '<span class="badge badge-safe"><span class="material-icons mi-xs">sentiment_satisfied</span> 안붐빔</span>' : ''}
+          ${r.price && r.price <= 10000 ? '<span class="badge badge-cheap"><span class="material-icons mi-xs">payments</span> 1만원↓</span>' : ''}
         </div>
       </div>
     </div>
