@@ -168,9 +168,7 @@ function runSlot(final, label = '오늘의 추천') {
   document.getElementById('resultLabel').textContent = label;
   document.getElementById('resultInfo').classList.add('hidden');
 
-  const card = document.getElementById('resultCard');
-  card.classList.remove('hidden');
-  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  document.getElementById('modalOverlay').classList.remove('hidden');
 
   if (spinInterval) clearInterval(spinInterval);
 
@@ -222,12 +220,26 @@ document.getElementById('rerollBtn').addEventListener('click', () => {
   pickRandom(pool, '다시 뽑기');
 });
 
+function closeModal() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
 document.getElementById('confirmBtn').addEventListener('click', () => {
   if (state.picked) {
     const link = state.picked.naver || naverLink(state.picked.name);
     window.open(link, '_blank', 'noopener');
   }
-  document.getElementById('resultCard').classList.add('hidden');
+  closeModal();
+});
+
+// 오버레이 바깥 클릭 시 닫기
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ESC 키로 닫기
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
 });
 
 // --- Weather recommend ---
