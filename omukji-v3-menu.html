@@ -181,7 +181,14 @@
     }
 
     /* ===== Category Filters ===== */
-    .cat-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .cat-filters {
+      display: flex; gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .cat-filters::-webkit-scrollbar { display: none; }
     .cat-btn {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -190,10 +197,11 @@
       font-size: 13px; font-weight: 500;
       color: var(--text-secondary);
       cursor: pointer;
+      flex-shrink: 0;
       transition: all 0.18s ease;
     }
     .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .cat-btn.active { background: var(--accent); border-color: var(--accent); color: #111; }
+    .cat-btn.active { background: transparent; border-color: var(--accent); color: var(--accent); }
 
     /* ===== Right Controls ===== */
     .right-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -235,7 +243,15 @@
     .btn-random:hover { background: var(--accent-hover); }
 
     /* ===== Sub Filters ===== */
-    .sub-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .sub-filters {
+      display: flex; gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-bottom: 16px;
+    }
+    .sub-filters::-webkit-scrollbar { display: none; }
     .sub-btn {
       display: flex; align-items: center; gap: 4px;
       background: var(--surface);
@@ -245,6 +261,7 @@
       font-size: 12px; font-weight: 500;
       color: var(--text-secondary);
       cursor: pointer;
+      flex-shrink: 0;
       transition: all 0.18s ease;
     }
     .sub-btn:hover { border-color: var(--accent); color: var(--accent); }
