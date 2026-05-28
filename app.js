@@ -1,4 +1,5 @@
-import { restaurants } from './data.js';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz0vL3C-vJC0sECwz0KRhWl1e6SkQZJFwyHe6yfLfGqyu62z423ciRQZyJtg2N7LrtM/exec';
+let restaurants = [];
 
 // --- Category styles ---
 const CAT_STYLE = {
@@ -348,5 +349,16 @@ async function loadWeather() {
 }
 
 // --- Init ---
-loadWeather();
-render();
+async function init() {
+  document.getElementById('grid').innerHTML = '<div class="empty">데이터 불러오는 중…</div>';
+  try {
+    const res = await fetch(SHEET_URL);
+    restaurants = await res.json();
+  } catch {
+    document.getElementById('grid').innerHTML = '<div class="empty">데이터를 불러올 수 없어요 😅<br><small>잠시 후 새로고침 해보세요</small></div>';
+    return;
+  }
+  loadWeather();
+  render();
+}
+init();
