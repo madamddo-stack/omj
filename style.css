@@ -602,7 +602,7 @@ body {
   min-width: 0;
 }
 .card-name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.5;
   color: var(--text-title);
@@ -611,7 +611,7 @@ body {
   text-overflow: ellipsis;
 }
 .card-cat-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
   color: var(--text-secondary);
@@ -635,11 +635,10 @@ body {
   color: var(--text-secondary);
 }
 .card-point {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
   color: #C8952A;
-  font-style: italic;
 }
 
 /* 배지 */
@@ -647,7 +646,7 @@ body {
 .badge {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1;
   padding: 3px 8px;
