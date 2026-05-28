@@ -1,3 +1,4 @@
+// price: 원 단위 숫자만 입력 (콤마 없이) → 예: 13000 O / 13,000 X
 export const restaurants = [
   { id: 1,  name: "네모오징어",         cat: "밥",    walk: 6,    min7: true,  price: 13000, honja: "가능",   safe: "보통", menu: "갑오징어불고기백반",  point: "볶음밥 마무리 확실",       naver: "https://map.naver.com/p/entry/place/128928137", img: "https://cdn.gpkorea.com/news/photo/202208/91609_202788_1722.jpg" },
   { id: 2,  name: "완백부대찌개",        cat: "국물",  walk: 6,    min7: true,  price: 12000, honja: "가능",   safe: "붐빔", menu: "부대찌개",            point: "팀점심 무난픽",            naver: "https://map.naver.com/p/entry/place/1755327528", img: "https://img.siksinhot.com/place/1443970776790487.jpg?w=560&h=448&c=Y" },
