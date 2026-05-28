@@ -1,4 +1,4 @@
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz0vL3C-vJC0sECwz0KRhWl1e6SkQZJFwyHe6yfLfGqyu62z423ciRQZyJtg2N7LrtM/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxdocDjKI_oS7iJde-DIH6WgX1FiKogdRviTbeAXSn0FUAxNaAyqr24CZ2lAlnm3ucf/exec';
 let restaurants = [];
 
 // --- Category styles ---
