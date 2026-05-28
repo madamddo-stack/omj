@@ -303,11 +303,10 @@ body {
   margin-bottom: 4px;
 }
 .result-point {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
   color: #C8952A;
-  font-style: italic;
 }
 
 .result-actions { display: flex; gap: 8px; }
