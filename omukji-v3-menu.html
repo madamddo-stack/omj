@@ -162,6 +162,24 @@
       flex-wrap: wrap;
     }
 
+    /* ===== View Toggle Row ===== */
+    .view-toggle-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .view-toggle-row .view-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 3px;
+      gap: 2px;
+    }
+    .view-toggle-row .view-btn {
+      padding: 7px 20px;
+      font-size: 13px;
+    }
+
     /* ===== Category Filters ===== */
     .cat-filters { display: flex; gap: 6px; flex-wrap: wrap; }
     .cat-btn {
@@ -610,6 +628,16 @@
     </div>
 
     <!-- ====== Controls ====== -->
+    <div class="view-toggle-row">
+      <div class="view-toggle" id="viewToggle">
+        <button class="view-btn active" data-view="restaurant">
+          <span class="material-icons mi-xs">storefront</span> 식당으로 보기
+        </button>
+        <button class="view-btn" data-view="menu">
+          <span class="material-icons mi-xs">menu_book</span> 메뉴로 보기
+        </button>
+      </div>
+    </div>
     <div class="controls">
       <div class="cat-filters" id="catFilters">
         <button class="cat-btn active" data-cat="전체">전체</button>
@@ -620,14 +648,6 @@
         <button class="cat-btn" data-cat="가볍게">🥗 가볍게</button>
       </div>
       <div class="right-controls">
-        <div class="view-toggle" id="viewToggle">
-          <button class="view-btn active" data-view="restaurant">
-            <span class="material-icons mi-xs">storefront</span> 식당
-          </button>
-          <button class="view-btn" data-view="menu">
-            <span class="material-icons mi-xs">menu_book</span> 메뉴
-          </button>
-        </div>
         <button class="btn-random" id="randomBtn">
           <span class="material-icons mi-sm">casino</span> 랜덤 뽑기
         </button>
