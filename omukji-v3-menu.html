@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오먹지 v3 🍽 — 교대 점심 맛집</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <style>
+    /* ===== Design Tokens ===== */
+    :root {
+      --bg:             #111111;
+      --surface:        #1C1C1C;
+      --surface-2:      #242424;
+      --surface-3:      #2A2A2A;
+      --border:         rgba(255,255,255,0.08);
+      --border-hover:   rgba(212,160,23,0.35);
+      --text-primary:   #F0EDE8;
+      --text-secondary: #888880;
+      --text-muted:     #555;
+      --accent:         #D4A017;
+      --accent-light:   rgba(212,160,23,0.15);
+      --accent-hover:   #E5B526;
+      --green:          #5FA870;
+      --green-light:    rgba(95,168,112,0.18);
+      --red:            #E57368;
+      --red-light:      rgba(229,115,104,0.15);
+      --r-sm:  8px;
+      --r-md:  12px;
+      --r-lg:  16px;
+      --r-xl:  20px;
+      --r-pill: 999px;
+      --font-title: 'Black Han Sans', sans-serif;
+      --font-body:  'Noto Serif KR', serif;
+    }
+
+    /* ===== Reset ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    .hidden { display: none !important; }
+
+    /* ===== Layout ===== */
+    #app { max-width: 780px; margin: 0 auto; padding: 0 16px 80px; }
+
+    /* ===== Header ===== */
+    .header {
+      padding: 22px 0 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .logo {
+      font-family: var(--font-title);
+      font-size: 26px;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+    .logo-accent { color: var(--accent); }
+    .header-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+    /* ===== Weather Box ===== */
+    .weather-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 8px 12px;
+      flex-shrink: 0;
+    }
+    .weather-icon { font-size: 22px; line-height: 1; }
+    .weather-info { display: flex; flex-direction: column; gap: 1px; }
+    .weather-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .weather-sub   { font-size: 11px; color: var(--text-secondary); }
+    .weather-tip {
+      display: flex; align-items: center; gap: 3px;
+      background: var(--accent-light);
+      border: 1px solid rgba(212,160,23,0.3);
+      border-radius: var(--r-pill);
+      padding: 3px 8px;
+      font-size: 11px; color: var(--accent);
+    }
+    .tip-icon { font-size: 14px; }
+    .tip-text  { font-size: 11px; }
+
+    /* ===== Weather Hero ===== */
+    .weather-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-radius: var(--r-xl);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .weather-hero-left { flex: 1; }
+    .weather-hero-label {
+      font-family: var(--font-title);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .weather-hero-msg {
+      font-family: var(--font-title);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre-line;
+    }
+    .weather-hero-right {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      min-width: 140px;
+      max-width: 160px;
+      flex-shrink: 0;
+    }
+    .hero-rec-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .hero-rec-menu { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .hero-rec-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .hero-rec-link {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; color: var(--accent);
+      margin-top: 8px; transition: color 0.15s;
+    }
+    .hero-rec-link:hover { color: var(--accent-hover); }
+    .weather-hero-deco {
+      position: absolute; right: 14px; bottom: 8px;
+      font-size: 52px; opacity: 0.12; pointer-events: none;
+      line-height: 1;
+    }
+
+    /* ===== Controls ===== */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ===== Category Filters ===== */
+    .cat-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .cat-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 6px 14px;
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-btn.active { background: var(--accent); border-color: var(--accent); color: #111; }
+
+    /* ===== Right Controls ===== */
+    .right-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* ===== View Toggle ===== */
+    .view-toggle {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 3px;
+      gap: 2px;
+    }
+    .view-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 5px 13px;
+      border-radius: var(--r-pill);
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.18s ease;
+      display: flex; align-items: center; gap: 4px;
+      white-space: nowrap;
+    }
+    .view-btn.active { background: var(--accent); color: #111; }
+    .view-btn:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+
+    /* ===== Random Button ===== */
+    .btn-random {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--accent);
+      color: #111;
+      border: none; border-radius: var(--r-pill);
+      padding: 8px 18px;
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s ease;
+      white-space: nowrap;
+    }
+    .btn-random:hover { background: var(--accent-hover); }
+
+    /* ===== Sub Filters ===== */
+    .sub-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .sub-btn {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 5px 12px;
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .sub-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .sub-btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+    /* ===== List Meta ===== */
+    .list-meta { display: flex; align-items: center; margin-bottom: 12px; }
+    .count-text { font-size: 12px; color: var(--text-secondary); }
+    .count-text strong { color: var(--accent); font-weight: 600; }
+
+    /* ===== Empty ===== */
+    .empty {
+      text-align: center; padding: 60px 20px;
+      color: var(--text-secondary); font-size: 15px; line-height: 2.2;
+    }
+
+    /* ===== Material Icons helpers ===== */
+    .mi-xs { font-size: 12px !important; vertical-align: -2px; }
+    .mi-sm { font-size: 15px !important; vertical-align: -3px; }
+
+    /* ===== Badges ===== */
+    .badge {
+      display: inline-flex; align-items: center; gap: 2px;
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+      font-size: 11px; font-weight: 500;
+      line-height: 1.4;
+    }
+    .badge-7min  { background: var(--accent-light);  color: var(--accent); border: 1px solid rgba(212,160,23,0.3); }
+    .badge-honja { background: var(--green-light);   color: var(--green);  border: 1px solid rgba(95,168,112,0.3); }
+    .badge-safe  { background: var(--green-light);   color: var(--green);  border: 1px solid rgba(95,168,112,0.3); }
+    .badge-cheap { background: var(--green-light);   color: var(--green);  border: 1px solid rgba(95,168,112,0.3); }
+
+    /* ===== Restaurant Grid ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 10px;
+    }
+
+    /* ===== Restaurant Card ===== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      transition: border-color 0.18s ease, transform 0.15s ease;
+    }
+    .card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+    .card-thumb {
+      width: 82px; min-width: 82px;
+      min-height: 90px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .card-body {
+      flex: 1; padding: 11px 13px;
+      display: flex; flex-direction: column; gap: 3px;
+      overflow: hidden;
+    }
+    .card-title-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    }
+    .card-title-left { display: flex; align-items: baseline; gap: 5px; overflow: hidden; }
+    .card-name {
+      font-family: var(--font-title);
+      font-size: 15px; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-cat-label { font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+    .card-arrow {
+      color: var(--text-muted); flex-shrink: 0;
+      display: flex; align-items: center;
+      transition: color 0.15s;
+    }
+    .card-arrow:hover { color: var(--accent); }
+    .card-meta { font-size: 12px; color: var(--text-secondary); }
+    /* Menu line: ★추천메뉴 +서브1 +서브2 */
+    .card-menus { font-size: 12px; line-height: 1.5; }
+    .menu-main { color: var(--accent); font-weight: 500; }
+    .menu-sub  { color: var(--text-secondary); }
+    .card-point { font-size: 12px; color: var(--text-muted); font-style: italic; }
+    .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+
+    /* ===== Menu View ===== */
+    .menu-view { display: flex; flex-direction: column; gap: 24px; }
+    .menu-group-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .menu-group-name {
+      font-family: var(--font-title);
+      font-size: 17px; color: var(--accent);
+    }
+    .menu-group-count {
+      font-size: 11px; color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 1px 8px;
+    }
+    .menu-group-rows { display: flex; flex-direction: column; gap: 7px; }
+    .menu-row {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 10px 14px;
+      transition: border-color 0.18s ease;
+    }
+    .menu-row:hover { border-color: var(--border-hover); }
+    .menu-row-thumb {
+      width: 36px; height: 36px;
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; background: var(--surface-2); flex-shrink: 0;
+    }
+    .menu-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .menu-row-info { flex: 1; overflow: hidden; }
+    .menu-row-name {
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .menu-row-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .menu-row-badge {
+      flex-shrink: 0;
+      padding: 2px 9px;
+      border-radius: var(--r-pill);
+      font-size: 11px; font-weight: 500;
+    }
+    .badge-main { background: var(--accent-light); color: var(--accent);         border: 1px solid rgba(212,160,23,0.3); }
+    .badge-sub  { background: rgba(255,255,255,0.04); color: var(--text-secondary); border: 1px solid var(--border); }
+    .menu-row-link {
+      color: var(--text-muted); flex-shrink: 0;
+      display: flex; align-items: center;
+      transition: color 0.15s;
+    }
+    .menu-row-link:hover { color: var(--accent); }
+
+    /* ===== Modal ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+    .result-card {
+      background: var(--surface);
+      border: 1px solid rgba(212,160,23,0.3);
+      border-radius: var(--r-xl);
+      padding: 24px;
+      width: 100%; max-width: 440px;
+      animation: modal-in 0.22s ease;
+    }
+    @keyframes modal-in {
+      from { transform: scale(0.92) translateY(12px); opacity: 0; }
+      to   { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .result-label {
+      font-family: var(--font-title);
+      font-size: 12px; color: var(--accent);
+      text-align: center; letter-spacing: 1.5px;
+      margin-bottom: 14px;
+    }
+    .slot-machine {
+      display: flex; gap: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 8px 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .slot-col {
+      flex: 1; display: flex; flex-direction: column;
+      text-align: center; overflow: hidden; gap: 2px;
+    }
+    .slot-item {
+      padding: 4px 2px;
+      font-size: 12px;
+      border-radius: 4px;
+      transition: color 0.1s;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .slot-dim    { color: var(--text-muted); }
+    .slot-active { color: var(--text-primary); font-weight: 600; font-size: 13px; }
+    .slot-final  { color: var(--accent); }
+
+    .result-info {
+      display: flex; gap: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px;
+      margin-bottom: 14px;
+      animation: modal-in 0.2s ease;
+    }
+    .result-thumb {
+      width: 64px; min-width: 64px; height: 64px;
+      border-radius: var(--r-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; background: var(--surface-3);
+    }
+    .result-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .result-detail { flex: 1; overflow: hidden; }
+    .result-name-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+    .result-name {
+      font-family: var(--font-title);
+      font-size: 20px; color: var(--text-primary);
+    }
+    .result-cat-badge { font-size: 12px; color: var(--text-secondary); }
+    .result-meta  { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .result-point { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 3px; }
+
+    .result-actions { display: flex; gap: 8px; }
+    .btn-reroll {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 500;
+      padding: 10px 16px; cursor: pointer;
+      transition: border-color 0.18s, color 0.18s;
+    }
+    .btn-reroll:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-decide {
+      flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 5px;
+      background: var(--accent);
+      border: none; border-radius: var(--r-pill);
+      color: #111;
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 700;
+      padding: 10px 16px; cursor: pointer;
+      transition: background 0.18s;
+    }
+    .btn-decide:hover { background: var(--accent-hover); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 520px) {
+      .header-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .weather-box  { align-self: stretch; }
+      .controls     { flex-direction: column; align-items: flex-start; }
+      .right-controls { width: 100%; justify-content: space-between; }
+      .grid         { grid-template-columns: 1fr; }
+      .weather-hero { flex-direction: column; }
+      .weather-hero-right { min-width: unset; max-width: unset; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ====== Header ====== -->
+  <header class="header">
+    <div class="header-inner">
+      <div>
+        <h1 class="logo">오먹지 <span class="logo-accent">🍽</span></h1>
+        <p class="header-desc">교대 근처 점심 맛집 · 동익성봉빌딩 기준 도보거리</p>
+      </div>
+      <div id="weatherBox" class="weather-box">
+        <span id="weatherIcon" class="weather-icon">—</span>
+        <div class="weather-info">
+          <span id="weatherLabel" class="weather-label">날씨 불러오는 중</span>
+          <span id="weatherSub" class="weather-sub"></span>
+        </div>
+        <span id="weatherTip" class="weather-tip"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ====== Weather Hero ====== -->
+    <div id="weatherHero" class="weather-hero hidden">
+      <div class="weather-hero-left">
+        <div class="weather-hero-label" id="heroLabel"></div>
+        <p class="weather-hero-msg" id="heroMsg"></p>
+      </div>
+      <div class="weather-hero-right" id="heroRec"></div>
+      <span class="weather-hero-deco" id="heroDeco"></span>
+    </div>
+
+    <!-- ====== Controls ====== -->
+    <div class="controls">
+      <div class="cat-filters" id="catFilters">
+        <button class="cat-btn active" data-cat="전체">전체</button>
+        <button class="cat-btn" data-cat="밥">🍚 밥</button>
+        <button class="cat-btn" data-cat="국물">🍲 국물</button>
+        <button class="cat-btn" data-cat="면">🍜 면</button>
+        <button class="cat-btn" data-cat="고기">🥩 고기</button>
+        <button class="cat-btn" data-cat="가볍게">🥗 가볍게</button>
+      </div>
+      <div class="right-controls">
+        <div class="view-toggle" id="viewToggle">
+          <button class="view-btn active" data-view="restaurant">
+            <span class="material-icons mi-xs">storefront</span> 식당
+          </button>
+          <button class="view-btn" data-view="menu">
+            <span class="material-icons mi-xs">menu_book</span> 메뉴
+          </button>
+        </div>
+        <button class="btn-random" id="randomBtn">
+          <span class="material-icons mi-sm">casino</span> 랜덤 뽑기
+        </button>
+      </div>
+    </div>
+
+    <!-- ====== Sub Filters ====== -->
+    <div class="sub-filters" id="subFilters">
+      <button class="sub-btn" data-filter="min7"><span class="material-icons mi-xs">bolt</span> 7분컷</button>
+      <button class="sub-btn" data-filter="honja"><span class="material-icons mi-xs">person</span> 혼밥 가능</button>
+      <button class="sub-btn" data-filter="safe"><span class="material-icons mi-xs">sentiment_satisfied</span> 안 붐빔</button>
+      <button class="sub-btn" data-filter="cheap"><span class="material-icons mi-xs">payments</span> 1만원 이하</button>
+    </div>
+
+    <!-- ====== List Meta ====== -->
+    <div class="list-meta">
+      <span id="countText" class="count-text"></span>
+    </div>
+
+    <!-- ====== Restaurant View ====== -->
+    <div class="grid" id="grid"></div>
+
+    <!-- ====== Menu View ====== -->
+    <div class="menu-view hidden" id="menuView"></div>
+
+  </main>
+
+  <!-- ====== Modal ====== -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="result-card" id="resultCard">
+      <p class="result-label" id="resultLabel">오늘의 추천</p>
+
+      <div class="slot-machine">
+        <div class="slot-col" id="slotName"></div>
+        <div class="slot-col" id="slotMenu"></div>
+        <div class="slot-col" id="slotCat"></div>
+      </div>
+
+      <div class="result-info hidden" id="resultInfo">
+        <div class="result-thumb" id="resultThumb"></div>
+        <div class="result-detail">
+          <div class="result-name-row">
+            <strong class="result-name" id="resultName"></strong>
+            <span class="result-cat-badge" id="resultCatBadge"></span>
+          </div>
+          <p class="result-meta" id="resultMeta"></p>
+          <p class="result-point" id="resultPoint"></p>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-reroll" id="rerollBtn">
+          <span class="material-icons mi-sm">replay</span> 다시 뽑기
+        </button>
+        <button class="btn-decide" id="confirmBtn">
+          이걸로 결정! <span class="material-icons mi-sm">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+<script type="module">
+import { restaurants } from './data.js';
+
+/* ---- Category styles (dark palette) ---- */
+const CAT_STYLE = {
+  '밥':    { bg: 'rgba(212,160,23,0.12)',  emoji: '🍚' },
+  '국물':  { bg: 'rgba(192,57,43,0.18)',   emoji: '🍲' },
+  '면':    { bg: 'rgba(212,160,23,0.08)',   emoji: '🍜' },
+  '고기':  { bg: 'rgba(139,94,60,0.22)',   emoji: '🥩' },
+  '가볍게': { bg: 'rgba(74,124,89,0.22)',   emoji: '🥗' },
+};
+
+/* ---- State ---- */
+let state = {
+  view: 'restaurant',   // 'restaurant' | 'menu'
+  category: '전체',
+  filters: { min7: false, honja: false, safe: false, cheap: false },
+  weather: null,
+  filtered: [],
+  picked: null,
+};
+let spinInterval = null;
+
+/* ---- Helpers ---- */
+function formatPrice(p) {
+  if (!p) return '-';
+  return p >= 10000 ? `₩${(p / 10000).toFixed(1)}만` : `₩${p.toLocaleString()}`;
+}
+function naverLink(name) {
+  return `https://map.naver.com/v5/search/${encodeURIComponent(name + ' 교대')}`;
+}
+
+/* ---- Filter ---- */
+function getFiltered() {
+  return restaurants.filter(r => {
+    if (state.category !== '전체' && r.cat !== state.category) return false;
+    if (state.filters.min7  && !r.min7) return false;
+    if (state.filters.honja && !['가능','좋음','매우좋음'].includes(r.honja)) return false;
+    if (state.filters.safe  && r.safe === '붐빔') return false;
+    if (state.filters.cheap && r.price > 10000) return false;
+    return true;
+  });
+}
+
+/* ---- Render Restaurant Card ---- */
+function renderCard(r) {
+  const link = r.naver || naverLink(r.name);
+  const cat  = CAT_STYLE[r.cat] || { bg: 'rgba(255,255,255,0.05)', emoji: '🍽' };
+  const hasImg = r.img && r.img !== 'URL' && r.img !== '';
+  const thumb = hasImg
+    ? `<div class="card-thumb"><img src="${r.img}" alt="${r.menu || r.name}" loading="lazy" /></div>`
+    : `<div class="card-thumb" style="background:${cat.bg}">${cat.emoji}</div>`;
+
+  /* Menu line: ★추천 +서브1 +서브2 */
+  let menuLine = '';
+  const hasSubs = r.submenus && r.submenus.length > 0;
+  if (r.menu || hasSubs) {
+    const parts = [];
+    if (r.menu) parts.push(`<span class="menu-main">${r.menu}</span>`);
+    if (hasSubs) r.submenus.forEach(s => parts.push(`<span class="menu-sub"> +${s}</span>`));
+    menuLine = `<p class="card-menus">${parts.join('')}</p>`;
+  }
+
+  const honjaOK = ['가능','좋음','매우좋음'].includes(r.honja);
+
+  return `
+    <div class="card">
+      ${thumb}
+      <div class="card-body">
+        <div class="card-title-row">
+          <div class="card-title-left">
+            <span class="card-name">${r.name}</span>
+            <span class="card-cat-label">· ${r.cat}</span>
+          </div>
+          <a class="card-arrow" href="${link}" target="_blank" rel="noopener" aria-label="${r.name} 네이버 지도">
+            <span class="material-icons mi-sm">open_in_new</span>
+          </a>
+        </div>
+        <p class="card-meta">도보 ${r.walk ?? '?'}분 · ${formatPrice(r.price)}</p>
+        ${menuLine}
+        ${r.point ? `<p class="card-point">"${r.point}"</p>` : ''}
+        <div class="badges">
+          ${r.min7   ? '<span class="badge badge-7min"><span class="material-icons mi-xs">bolt</span> 7분컷</span>' : ''}
+          ${honjaOK  ? '<span class="badge badge-honja"><span class="material-icons mi-xs">person</span> 혼밥</span>' : ''}
+          ${r.safe !== '붐빔' ? '<span class="badge badge-safe"><span class="material-icons mi-xs">sentiment_satisfied</span> 안붐빔</span>' : ''}
+          ${r.price && r.price <= 10000 ? '<span class="badge badge-cheap"><span class="material-icons mi-xs">payments</span> 1만원↓</span>' : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---- Render Menu View ---- */
+function renderMenuView() {
+  const menuMap = new Map();
+
+  state.filtered.forEach(r => {
+    if (r.menu) {
+      if (!menuMap.has(r.menu)) menuMap.set(r.menu, []);
+      menuMap.get(r.menu).push({ r, isMain: true });
+    }
+    if (r.submenus && r.submenus.length > 0) {
+      r.submenus.forEach(sub => {
+        if (!sub.trim()) return;
+        if (!menuMap.has(sub)) menuMap.set(sub, []);
+        menuMap.get(sub).push({ r, isMain: false });
+      });
+    }
+  });
+
+  /* Sort: ★추천(isMain) 많은 순 → 전체 개수 순 */
+  const sorted = [...menuMap.entries()].sort((a, b) => {
+    const mainA = a[1].filter(e => e.isMain).length;
+    const mainB = b[1].filter(e => e.isMain).length;
+    if (mainB !== mainA) return mainB - mainA;
+    return b[1].length - a[1].length;
+  });
+
+  const menuView = document.getElementById('menuView');
+  if (sorted.length === 0) {
+    menuView.innerHTML = '<div class="empty">조건에 맞는 메뉴가 없어요 😅<br><small>필터를 조정해보세요</small></div>';
+    return;
+  }
+
+  menuView.innerHTML = sorted.map(([menuName, entries]) => {
+    const rows = entries.map(({ r, isMain }) => {
+      const link  = r.naver || naverLink(r.name);
+      const cat   = CAT_STYLE[r.cat] || { bg: 'rgba(255,255,255,0.05)', emoji: '🍽' };
+      const hasImg = r.img && r.img !== 'URL' && r.img !== '';
+      const thumb  = hasImg
+        ? `<div class="menu-row-thumb"><img src="${r.img}" alt="${r.name}" loading="lazy" /></div>`
+        : `<div class="menu-row-thumb" style="background:${cat.bg}">${cat.emoji}</div>`;
+      const badge = isMain
+        ? `<span class="menu-row-badge badge-main">★ 추천</span>`
+        : `<span class="menu-row-badge badge-sub">서브</span>`;
+      return `
+        <div class="menu-row">
+          ${thumb}
+          <div class="menu-row-info">
+            <div class="menu-row-name">${r.name}</div>
+            <div class="menu-row-meta">${r.cat} · 도보 ${r.walk ?? '?'}분 · ${formatPrice(r.price)}</div>
+          </div>
+          ${badge}
+          <a class="menu-row-link" href="${link}" target="_blank" rel="noopener" aria-label="${r.name} 네이버 지도">
+            <span class="material-icons mi-sm">open_in_new</span>
+          </a>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="menu-group">
+        <div class="menu-group-header">
+          <span class="menu-group-name">${menuName}</span>
+          <span class="menu-group-count">${entries.length}곳</span>
+        </div>
+        <div class="menu-group-rows">${rows}</div>
+      </div>`;
+  }).join('');
+}
+
+/* ---- Render (top-level) ---- */
+function render() {
+  state.filtered = getFiltered();
+  const grid     = document.getElementById('grid');
+  const menuView = document.getElementById('menuView');
+  const count    = document.getElementById('countText');
+
+  count.innerHTML = `<strong>${state.filtered.length}곳</strong> 표시 중`;
+
+  if (state.view === 'restaurant') {
+    grid.classList.remove('hidden');
+    menuView.classList.add('hidden');
+    grid.innerHTML = state.filtered.length
+      ? state.filtered.map(renderCard).join('')
+      : '<div class="empty">조건에 맞는 식당이 없어요 😅<br><small>필터를 조정해보세요</small></div>';
+  } else {
+    grid.classList.add('hidden');
+    menuView.classList.remove('hidden');
+    renderMenuView();
+  }
+}
+
+/* ---- View Toggle ---- */
+document.getElementById('viewToggle').addEventListener('click', e => {
+  const btn = e.target.closest('.view-btn');
+  if (!btn) return;
+  state.view = btn.dataset.view;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b === btn));
+  render();
+});
+
+/* ---- Category Filter ---- */
+document.getElementById('catFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-btn');
+  if (!btn) return;
+  state.category = btn.dataset.cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+  render();
+});
+
+/* ---- Sub Filters ---- */
+document.getElementById('subFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.sub-btn');
+  if (!btn) return;
+  const key = btn.dataset.filter;
+  state.filters[key] = !state.filters[key];
+  btn.classList.toggle('active', state.filters[key]);
+  render();
+});
+
+/* ---- Slot Machine ---- */
+function setSlotCol(id, top, mid, bot, isFinal) {
+  document.getElementById(id).innerHTML = `
+    <div class="slot-item slot-dim">${top}</div>
+    <div class="slot-item slot-active${isFinal ? ' slot-final' : ''}">${mid}</div>
+    <div class="slot-item slot-dim">${bot}</div>`;
+}
+function setSlotCols(prev, curr, next, isFinal) {
+  setSlotCol('slotName', prev.name, curr.name, next.name, isFinal);
+  setSlotCol('slotMenu', prev.menu || prev.cat, curr.menu || curr.cat, next.menu || next.cat, isFinal);
+  setSlotCol('slotCat',  prev.cat,  curr.cat,  next.cat,  isFinal);
+}
+
+function showResultInfo(r) {
+  const cat    = CAT_STYLE[r.cat] || { emoji: '🍽' };
+  const hasImg = r.img && r.img !== 'URL' && r.img !== '';
+  document.getElementById('resultThumb').innerHTML = hasImg
+    ? `<img src="${r.img}" alt="${r.name}" />`
+    : cat.emoji;
+  document.getElementById('resultName').textContent     = r.name;
+  document.getElementById('resultCatBadge').textContent = `· ${r.cat}`;
+  document.getElementById('resultMeta').textContent     = `${r.menu || '-'} · 도보 ${r.walk ?? '?'}분 · ${formatPrice(r.price)}`;
+  document.getElementById('resultPoint').textContent    = r.point ? `"${r.point}"` : '';
+  document.getElementById('resultInfo').classList.remove('hidden');
+}
+
+function runSlot(final, label = '오늘의 추천') {
+  const pool = state.filtered.length ? state.filtered : restaurants;
+  document.getElementById('resultLabel').textContent = label;
+  document.getElementById('resultInfo').classList.add('hidden');
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  if (spinInterval) clearInterval(spinInterval);
+
+  let ticks = 0;
+  spinInterval = setInterval(() => {
+    ticks++;
+    if (ticks < 20) {
+      const i = Math.floor(Math.random() * pool.length);
+      setSlotCols(pool[(i-1+pool.length)%pool.length], pool[i], pool[(i+1)%pool.length], false);
+    } else {
+      clearInterval(spinInterval); spinInterval = null;
+      const fi = pool.indexOf(final) !== -1 ? pool.indexOf(final) : 0;
+      setSlotCols(pool[(fi-1+pool.length)%pool.length], final, pool[(fi+1)%pool.length], true);
+      state.picked = final;
+      setTimeout(() => showResultInfo(final), 150);
+    }
+  }, 80);
+}
+
+function pickRandom(list, label) {
+  if (!list.length) return;
+  runSlot(list[Math.floor(Math.random() * list.length)], label);
+}
+
+document.getElementById('randomBtn').addEventListener('click', () => {
+  pickRandom(state.filtered.length ? state.filtered : restaurants, '오늘의 랜덤 점심');
+});
+document.getElementById('rerollBtn').addEventListener('click', () => {
+  pickRandom(state.filtered.length ? state.filtered : restaurants, '다시 뽑기');
+});
+
+function closeModal() { document.getElementById('modalOverlay').classList.add('hidden'); }
+
+document.getElementById('confirmBtn').addEventListener('click', () => {
+  if (state.picked) window.open(state.picked.naver || naverLink(state.picked.name), '_blank', 'noopener');
+  closeModal();
+});
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ---- Weather ---- */
+function getWeatherCandidates() {
+  const w = state.weather;
+  if (w === 'rain' || w === 'freeze' || w === 'cold') return restaurants.filter(r => r.cat === '국물');
+  if (w === 'chilly') return restaurants.filter(r => r.cat === '국물' || r.cat === '고기');
+  if (w === 'warm' || w === 'hot')  return restaurants.filter(r => r.cat === '가볍게' || r.cat === '면');
+  return restaurants;
+}
+
+function renderHeroRec() {
+  const pool = getWeatherCandidates();
+  if (!pool.length) return;
+  const r    = pool[Math.floor(Math.random() * pool.length)];
+  const link = r.naver || naverLink(r.name);
+  document.getElementById('heroRec').innerHTML = `
+    <div class="hero-rec-name">${r.name}</div>
+    <div class="hero-rec-menu">${r.menu || r.cat}</div>
+    <div class="hero-rec-meta">도보 ${r.walk ?? '?'}분 · ${formatPrice(r.price)}</div>
+    <a class="hero-rec-link" href="${link}" target="_blank" rel="noopener">
+      <span class="material-icons mi-xs">open_in_new</span> 지도
+    </a>`;
+}
+
+async function loadWeather() {
+  try {
+    const res  = await fetch('https://api.open-meteo.com/v1/forecast?latitude=37.4932&longitude=127.0136&current=temperature_2m,precipitation,weathercode&timezone=Asia/Seoul');
+    const data = await res.json();
+    const temp   = Math.round(data.current.temperature_2m);
+    const precip = data.current.precipitation;
+    const code   = data.current.weathercode;
+
+    let icon, label, sub;
+    if (precip > 0 || (code >= 51 && code <= 99)) {
+      icon = '🌧'; label = `비 · ${temp}°C`; sub = '따뜻한 국물 어때요?';        state.weather = 'rain';
+    } else if (temp <= 0) {
+      icon = '❄️'; label = `영하 · ${temp}°C`; sub = '뜨끈한 국물이 간절한 날'; state.weather = 'freeze';
+    } else if (temp <= 7) {
+      icon = '🥶'; label = `추움 · ${temp}°C`; sub = '뜨끈한 국물 강추!';        state.weather = 'cold';
+    } else if (temp <= 14) {
+      icon = '🧥'; label = `쌀쌀 · ${temp}°C`; sub = '든든하게 먹어요';          state.weather = 'chilly';
+    } else if (temp <= 22) {
+      icon = '😊'; label = `적당 · ${temp}°C`; sub = '뭐든 다 맛있는 날';        state.weather = 'mild';
+    } else if (temp <= 27) {
+      icon = '🌤'; label = `따뜻 · ${temp}°C`; sub = '산뜻한 메뉴 어때요?';     state.weather = 'warm';
+    } else {
+      icon = '🌡'; label = `더움 · ${temp}°C`; sub = '시원하고 가볍게!';          state.weather = 'hot';
+    }
+
+    const tipEl = document.getElementById('weatherTip');
+    if      (state.weather === 'rain') tipEl.innerHTML = `<span class="tip-icon">☂️</span><span class="tip-text">우산 챙기세요</span>`;
+    else if (state.weather === 'hot')  tipEl.innerHTML = `<span class="tip-icon">🕶️</span><span class="tip-text">썬글라스 챙기세요</span>`;
+    else tipEl.innerHTML = '';
+
+    document.getElementById('weatherIcon').textContent  = icon;
+    document.getElementById('weatherLabel').textContent = label;
+    document.getElementById('weatherSub').textContent   = sub;
+
+    const HERO = {
+      rain:   { bg: 'linear-gradient(135deg,#111d2e 0%,#152035 100%)', deco:'🌧', label:'🌧 Rainy',       msg:'비 오는 날엔\n따뜻한 국물 한 그릇\n어떠세요?' },
+      freeze: { bg: 'linear-gradient(135deg,#0e1928 0%,#152234 100%)', deco:'❄️', label:'❄️ Freezing',    msg:'꽁꽁 언 오늘\n뜨끈한 국물이\n간절한 날이에요' },
+      cold:   { bg: 'linear-gradient(135deg,#0e1928 0%,#152234 100%)', deco:'🥶', label:'🥶 Cold',         msg:'추운 날엔\n뜨끈한 국물로\n속을 채워요' },
+      chilly: { bg: 'linear-gradient(135deg,#1a1510 0%,#2a1e0e 100%)', deco:'🧥', label:'🧥 Chilly',       msg:'쌀쌀한 오늘\n든든한 한 끼로\n따뜻하게 시작해요' },
+      mild:   { bg: 'linear-gradient(135deg,#121a13 0%,#1a2a1a 100%)', deco:'😊', label:'😊 Perfect',      msg:'딱 좋은 날씨\n오늘은 뭐든\n다 맛있어요' },
+      warm:   { bg: 'linear-gradient(135deg,#1a1600 0%,#2a2000 100%)', deco:'🌤', label:'🌤 Warm',         msg:'따뜻한 오늘\n산뜻한 메뉴로\n가볍게 가볼까요?' },
+      hot:    { bg: 'linear-gradient(135deg,#1a0f00 0%,#2a1500 100%)', deco:'☁️', label:'🌡 Sunny & Hot',  msg:'무더운 오늘\n시원한 면 메뉴로\n가볍게 가볼까요?' },
+    };
+
+    const h = HERO[state.weather];
+    if (h) {
+      const hero = document.getElementById('weatherHero');
+      hero.style.background = h.bg;
+      document.getElementById('heroLabel').textContent = h.label;
+      document.getElementById('heroMsg').textContent   = h.msg;
+      document.getElementById('heroDeco').textContent  = h.deco;
+      hero.classList.remove('hidden');
+      renderHeroRec();
+    }
+  } catch {
+    document.getElementById('weatherLabel').textContent = '날씨 정보 없음';
+    document.getElementById('weatherSub').textContent   = '랜덤 추천을 이용해보세요';
+  }
+}
+
+/* ---- Init ---- */
+loadWeather();
+render();
+</script>
+</body>
+</html>
