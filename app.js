@@ -242,35 +242,33 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
-// --- Weather recommend ---
-document.getElementById('weatherRecommendBtn').addEventListener('click', () => {
-  const pool = state.filtered.length ? state.filtered : restaurants;
-  let candidates = pool;
-  let label = '날씨 기반 추천';
+// --- Weather hero 자동 추천 ---
+function getWeatherCandidates() {
+  if (state.weather === 'rain' || state.weather === 'freeze' || state.weather === 'cold')
+    return restaurants.filter(r => r.cat === '국물');
+  if (state.weather === 'chilly')
+    return restaurants.filter(r => r.cat === '국물' || r.cat === '고기');
+  if (state.weather === 'warm')
+    return restaurants.filter(r => r.cat === '가볍게' || r.cat === '면');
+  if (state.weather === 'hot')
+    return restaurants.filter(r => r.cat === '가볍게' || r.cat === '면');
+  return restaurants;
+}
 
-  if (state.weather === 'rain') {
-    candidates = pool.filter(r => r.cat === '국물');
-    label = '비 오는 날엔 국물!';
-  } else if (state.weather === 'freeze') {
-    candidates = pool.filter(r => r.cat === '국물');
-    label = '영하의 날엔 국물이 답!';
-  } else if (state.weather === 'cold') {
-    candidates = pool.filter(r => r.cat === '국물');
-    label = '추운 날엔 뜨끈하게!';
-  } else if (state.weather === 'chilly') {
-    candidates = pool.filter(r => r.cat === '국물' || r.cat === '고기');
-    label = '쌀쌀한 날엔 든든하게!';
-  } else if (state.weather === 'warm') {
-    candidates = pool.filter(r => r.cat === '가볍게' || r.cat === '면');
-    label = '따뜻한 날엔 산뜻하게!';
-  } else if (state.weather === 'hot') {
-    candidates = pool.filter(r => r.cat === '가볍게' || (r.cat === '면' && r.safe !== '붐빔'));
-    label = '더운 날엔 가볍게!';
-  }
-
-  if (!candidates.length) candidates = pool;
-  pickRandom(candidates, label);
-});
+function renderHeroRec() {
+  const pool = getWeatherCandidates();
+  if (!pool.length) return;
+  const r = pool[Math.floor(Math.random() * pool.length)];
+  const link = r.naver || naverLink(r.name);
+  document.getElementById('heroRec').innerHTML = `
+    <div class="hero-rec-name">${r.name}</div>
+    <div class="hero-rec-menu">${r.menu || r.cat}</div>
+    <div class="hero-rec-meta">도보 ${r.walk ?? '?'}분 · ${formatPrice(r.price)}</div>
+    <a class="hero-rec-link" href="${link}" target="_blank" rel="noopener">
+      <span class="material-icons mi-xs">open_in_new</span> 지도
+    </a>
+  `;
+}
 
 // --- Weather API ---
 async function loadWeather() {
@@ -341,6 +339,7 @@ async function loadWeather() {
       document.getElementById('heroMsg').textContent = h.msg;
       document.getElementById('heroDeco').textContent = h.deco;
       hero.classList.remove('hidden');
+      renderHeroRec();
     }
   } catch {
     document.getElementById('weatherLabel').textContent = '날씨 정보 없음';
