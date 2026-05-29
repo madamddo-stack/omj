@@ -11,22 +11,22 @@
   <style>
     /* ===== Design Tokens ===== */
     :root {
-      --bg:             #111111;
-      --surface:        #1C1C1C;
-      --surface-2:      #242424;
-      --surface-3:      #2A2A2A;
-      --border:         rgba(255,255,255,0.08);
-      --border-hover:   rgba(212,160,23,0.35);
-      --text-primary:   #F0EDE8;
-      --text-secondary: #888880;
-      --text-muted:     #555;
+      --bg:             #F9F9F9;
+      --surface:        #FFFFFF;
+      --surface-2:      #F5F5F5;
+      --surface-3:      #EBEBEB;
+      --border:         #E4E4E4;
+      --border-hover:   rgba(212,160,23,0.5);
+      --text-primary:   #1A1A1A;
+      --text-secondary: #666666;
+      --text-muted:     #9E9E9E;
       --accent:         #D4A017;
-      --accent-light:   rgba(212,160,23,0.15);
-      --accent-hover:   #E5B526;
-      --green:          #5FA870;
-      --green-light:    rgba(95,168,112,0.18);
-      --red:            #E57368;
-      --red-light:      rgba(229,115,104,0.15);
+      --accent-light:   rgba(212,160,23,0.12);
+      --accent-hover:   #C49010;
+      --green:          #077D55;
+      --green-light:    rgba(7,125,85,0.10);
+      --red:            #C0392B;
+      --red-light:      rgba(192,57,43,0.10);
       --r-sm:  8px;
       --r-md:  12px;
       --r-lg:  16px;
@@ -106,7 +106,7 @@
       justify-content: space-between;
       gap: 16px;
       border-radius: var(--r-xl);
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
       border-left: 3px solid var(--accent);
       padding: 20px 24px;
       margin-bottom: 20px;
@@ -128,8 +128,8 @@
       white-space: pre-line;
     }
     .weather-hero-right {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--border);
       backdrop-filter: blur(6px);
       border-radius: var(--r-md);
       padding: 12px 14px;
@@ -226,14 +226,14 @@
       display: flex; align-items: center; gap: 4px;
       white-space: nowrap;
     }
-    .view-btn.active { background: var(--accent); color: #111; }
-    .view-btn:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+    .view-btn.active { background: var(--accent); color: #fff; }
+    .view-btn:hover:not(.active) { color: var(--text-primary); background: var(--surface-2); }
 
     /* ===== Random Button ===== */
     .btn-random {
       display: flex; align-items: center; gap: 6px;
       background: var(--accent);
-      color: #111;
+      color: #fff;
       border: none; border-radius: var(--r-pill);
       padding: 8px 18px;
       font-size: 13px; font-weight: 600;
@@ -402,7 +402,7 @@
       font-size: 12px; font-weight: 500;
     }
     .badge-main { background: var(--accent-light); color: var(--accent);         border: 1px solid rgba(212,160,23,0.3); }
-    .badge-sub  { background: rgba(255,255,255,0.04); color: var(--text-secondary); border: 1px solid var(--border); }
+    .badge-sub  { background: var(--surface-2); color: var(--text-secondary); border: 1px solid var(--border); }
     .menu-row-link {
       color: var(--text-muted); flex-shrink: 0;
       display: flex; align-items: center;
@@ -413,7 +413,7 @@
     /* ===== Modal ===== */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.72);
+      background: rgba(0,0,0,0.45);
       backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center;
       z-index: 200;
@@ -421,7 +421,7 @@
     }
     .result-card {
       background: var(--surface);
-      border: 1px solid rgba(212,160,23,0.3);
+      border: 1px solid var(--border);
       border-radius: var(--r-xl);
       padding: 24px;
       width: 100%; max-width: 440px;
@@ -503,7 +503,7 @@
       flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 5px;
       background: var(--accent);
       border: none; border-radius: var(--r-pill);
-      color: #111;
+      color: #fff;
       font-size: 13px; font-weight: 700;
       padding: 10px 16px; cursor: pointer;
       transition: background 0.18s;
@@ -528,7 +528,7 @@
     /* ===== Register Modal ===== */
     .register-card {
       background: var(--surface);
-      border: 1px solid rgba(212,160,23,0.3);
+      border: 1px solid var(--border);
       border-radius: var(--r-xl);
       padding: 24px;
       width: 100%; max-width: 460px;
@@ -582,7 +582,7 @@
     }
     .btn-submit {
       width: 100%;
-      background: var(--accent); color: #111;
+      background: var(--accent); color: #fff;
       border: none; border-radius: var(--r-pill);
       padding: 12px;
       font-size: 14px; font-weight: 700;
@@ -603,7 +603,7 @@
       display: flex;
       gap: 10px;
       padding: 12px 16px 20px;
-      background: linear-gradient(to top, #111111 60%, transparent);
+      background: linear-gradient(to top, #F9F9F9 60%, transparent);
       z-index: 100;
     }
     .sticky-bar .btn-random {
