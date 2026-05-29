@@ -240,7 +240,10 @@ document.getElementById('modalOverlay').addEventListener('click', e => {
 
 // ESC 키로 닫기
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeModal();
+    closeRegisterModal();
+  }
 });
 
 // --- Weather hero 자동 추천 ---
@@ -347,6 +350,108 @@ async function loadWeather() {
     document.getElementById('weatherSub').textContent = '랜덤 추천을 이용해보세요';
   }
 }
+
+// --- Register modal ---
+function openRegisterModal() {
+  const dl = document.getElementById('restaurantList');
+  dl.innerHTML = restaurants.map(r => `<option value="${r.name}">`).join('');
+  document.getElementById('registerOverlay').classList.remove('hidden');
+}
+
+function closeRegisterModal() {
+  document.getElementById('registerOverlay').classList.add('hidden');
+  ['regName', 'regMenu', 'regSubmitter', 'regNaver'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const detect = document.getElementById('regDetect');
+  detect.className = 'reg-detect hidden';
+  detect.textContent = '';
+  document.getElementById('newRestaurantFields').classList.add('hidden');
+  const btn = document.getElementById('regSubmitBtn');
+  btn.disabled = false;
+  btn.textContent = '등록하기';
+}
+
+document.getElementById('registerBtn').addEventListener('click', openRegisterModal);
+document.getElementById('registerClose').addEventListener('click', closeRegisterModal);
+document.getElementById('registerOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeRegisterModal();
+});
+
+document.getElementById('regName').addEventListener('input', e => {
+  const name = e.target.value.trim();
+  const detect    = document.getElementById('regDetect');
+  const newFields = document.getElementById('newRestaurantFields');
+  if (!name) {
+    detect.className = 'reg-detect hidden';
+    newFields.classList.add('hidden');
+    return;
+  }
+  const exists = restaurants.find(r => r.name === name);
+  if (exists) {
+    detect.className = 'reg-detect existing';
+    detect.textContent = '✅ 기존 식당이에요 — 서브메뉴로 추가될게요';
+    newFields.classList.add('hidden');
+  } else {
+    detect.className = 'reg-detect new';
+    detect.textContent = '🆕 새 식당이에요 — 추가 정보를 입력해주세요';
+    newFields.classList.remove('hidden');
+  }
+});
+
+document.getElementById('regSubmitBtn').addEventListener('click', async () => {
+  const name      = document.getElementById('regName').value.trim();
+  const menu      = document.getElementById('regMenu').value.trim();
+  const submitter = document.getElementById('regSubmitter').value.trim();
+  if (!name || !menu || !submitter) {
+    alert('식당명, 메뉴명, 등록자 닉네임은 필수예요!');
+    return;
+  }
+
+  const exists  = restaurants.find(r => r.name === name);
+  const payload = { name, menu, submitter };
+
+  if (!exists) {
+    const cat   = document.getElementById('regCat').value;
+    const walk  = document.getElementById('regWalk').value;
+    const price = document.getElementById('regPrice').value;
+    if (!cat || !walk || !price) {
+      alert('카테고리, 도보시간, 가격은 필수예요!');
+      return;
+    }
+    Object.assign(payload, {
+      cat, walk: Number(walk), price: Number(price),
+      honja: document.getElementById('regHonja').value,
+      naver: document.getElementById('regNaver').value,
+      safe: '보통', point: '', submenus: '', img: ''
+    });
+  }
+
+  const btn = document.getElementById('regSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '등록 중…';
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload),
+      mode: 'no-cors'
+    });
+    btn.textContent = '등록 완료! ✅';
+    setTimeout(async () => {
+      closeRegisterModal();
+      const res = await fetch(SHEET_URL);
+      restaurants = await res.json();
+      render();
+    }, 1200);
+  } catch {
+    alert('오류가 발생했어요. 다시 시도해주세요.');
+    btn.disabled = false;
+    btn.textContent = '등록하기';
+  }
+});
 
 // --- Init ---
 async function init() {
